@@ -1,2 +1,5 @@
-# Upendo Bakery
-This is the unified README content after resolving the conflict.
+<<<<<<< HEAD
+Your local content
+=======
+Remote content
+>>>>>>> 29589cc (some commit message)
