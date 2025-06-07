@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}New Product{% endblock %}
+
+{% block page_title %}New Product{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('new_product') }}">
+                    {{ form.csrf_token }}
+                    
+                    <div class="mb-3">
+                        {{ form.name.label(class="form-label") }}
+                        {{ form.name(class="form-control form-control-lg") }}
+                        {% if form.name.errors %}
+                            {% for error in form.name.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control form-control-lg", rows="3") }}
+                        {% if form.description.errors %}
+                            {% for error in form.description.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.price.label(class="form-label") }}
+                        {{ form.price(class="form-control form-control-lg", step="0.01") }}
+                        {% if form.price.errors %}
+                            {% for error in form.price.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.category.label(class="form-label") }}
+                        {{ form.category(class="form-select form-select-lg") }}
+                        {% if form.category.errors %}
+                            {% for error in form.category.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.unit.label(class="form-label") }}
+                        {{ form.unit(class="form-control form-control-lg") }}
+                        {% if form.unit.errors %}
+                            {% for error in form.unit.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.stock_quantity.label(class="form-label") }}
+                        {{ form.stock_quantity(class="form-control form-control-lg") }}
+                        {% if form.stock_quantity.errors %}
+                            {% for error in form.stock_quantity.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.min_stock.label(class="form-label") }}
+                        {{ form.min_stock(class="form-control form-control-lg") }}
+                        {% if form.min_stock.errors %}
+                            {% for error in form.min_stock.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.supplier_id.label(class="form-label") }}
+                        {{ form.supplier_id(class="form-select form-select-lg") }}
+                        {% if form.supplier_id.errors %}
+                            {% for error in form.supplier_id.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        {{ form.is_active(class="form-check-input") }}
+                        {{ form.is_active.label(class="form-check-label") }}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        {{ form.submit(class="btn btn-primary btn-lg") }}
+                        <a href="{{ url_for('product_list') }}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

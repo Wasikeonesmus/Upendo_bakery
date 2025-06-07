@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}{% if sale %}Edit Sale{% else %}New Sale{% endif %}{% endblock %}
+
+{% block page_title %}{% if sale %}Edit Sale{% else %}New Sale{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.csrf_token }}
+                    <div class="mb-3">
+                        <label class="form-label">Customer Name</label>
+                        {{ form.customer_name(class="form-control") }}
+                        {% if form.customer_name.errors %}
+                            {% for error in form.customer_name.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div id="sale-items">
+                        {% for item_form in form.items %}
+                        <div class="sale-item-row mb-3 p-3 border rounded">
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Product</label>
+                                    {{ item_form.product_id(class="form-control product-select") }}
+                                    {% if item_form.product_id.errors %}
+                                        {% for error in item_form.product_id.errors %}
+                                            <span class="text-danger">{{ error }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label class="form-label">Quantity</label>
+                                    {{ item_form.quantity(class="form-control quantity-input", type="number", min="1") }}
+                                    {% if item_form.quantity.errors %}
+                                        {% for error in item_form.quantity.errors %}
+                                            <span class="text-danger">{{ error }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label class="form-label">Unit Price</label>
+                                    {{ item_form.unit_price(class="form-control price-input", type="number", step="0.01", min="0") }}
+                                    {% if item_form.unit_price.errors %}
+                                        {% for error in item_form.unit_price.errors %}
+                                            <span class="text-danger">{{ error }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="button" id="add-sale-item" class="btn btn-secondary">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Total Amount</label>
+                        <input type="text" id="total-amount" class="form-control" readonly>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('sale_list') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            {% if sale %}Update Sale{% else %}Create Sale{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const saleItemsContainer = document.getElementById('sale-items');
+    const addItemButton = document.getElementById('add-sale-item');
+    const totalAmountInput = document.getElementById('total-amount');
+    const productSelects = document.querySelectorAll('.product-select');
+
+    function calculateTotalAmount() {
+        let total = 0;
+        const saleItemRows = document.querySelectorAll('.sale-item-row');
+        saleItemRows.forEach(row => {
+            const quantityInput = row.querySelector('.quantity-input');
+            const priceInput = row.querySelector('.price-input');
+            const quantity = parseFloat(quantityInput.value) || 0;
+            const price = parseFloat(priceInput.value) || 0;
+            total += quantity * price;
+        });
+        totalAmountInput.value = total.toFixed(2);
+    }
+
+    // Add event listeners to calculate total amount
+    saleItemsContainer.addEventListener('input', function(e) {
+        if (e.target.classList.contains('quantity-input') || 
+            e.target.classList.contains('price-input')) {
+            calculateTotalAmount();
+        }
+    });
+
+    // Add new sale item dynamically
+    addItemButton.addEventListener('click', function() {
+        const newItemIndex = saleItemsContainer.children.length;
+        const newItemRow = document.createElement('div');
+        newItemRow.classList.add('sale-item-row', 'mb-3', 'p-3', 'border', 'rounded');
+        newItemRow.innerHTML = `
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Product</label>
+                    <select name="items-${newItemIndex}-product_id" class="form-control product-select" required>
+                        ${productSelects[0].innerHTML}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="form-label">Quantity</label>
+                    <input type="number" name="items-${newItemIndex}-quantity" class="form-control quantity-input" min="1" required>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="form-label">Unit Price</label>
+                    <input type="number" name="items-${newItemIndex}-unit_price" class="form-control price-input" step="0.01" min="0" required>
+                </div>
+            </div>
+        `;
+        saleItemsContainer.appendChild(newItemRow);
+    });
+
+    // Initial total amount calculation
+    calculateTotalAmount();
+});
+</script>
+{% endblock %} 

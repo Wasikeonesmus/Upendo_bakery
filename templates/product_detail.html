@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Product Details - {{ product.name }}{% endblock %}
+
+{% block page_title %}Product Details - {{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Product Information</h5>
+                <dl class="row">
+                    <dt class="col-5 col-sm-4">Name</dt>
+                    <dd class="col-7 col-sm-8">{{ product.name }}</dd>
+                    <dt class="col-5 col-sm-4">Category</dt>
+                    <dd class="col-7 col-sm-8">{{ product.category }}</dd>
+                    <dt class="col-5 col-sm-4">Price</dt>
+                    <dd class="col-7 col-sm-8">Ksh {{ "%.2f"|format(product.price) }}</dd>
+                    <dt class="col-5 col-sm-4">Stock</dt>
+                    <dd class="col-7 col-sm-8">{{ product.stock_quantity }}</dd>
+                    <dt class="col-5 col-sm-4">Status</dt>
+                    <dd class="col-7 col-sm-8">
+                        <span class="badge {% if product.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                            {{ "Active" if product.is_active else "Inactive" }}
+                        </span>
+                    </dd>
+                </dl>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('edit_product', id=product.id) }}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Edit Product
+                    </a>
+                    <a href="{{ url_for('product_list') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Sales History</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sale in sales %}
+                            <tr>
+                                <td>{{ sale.sale_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ sale.quantity }}</td>
+                                <td>Ksh {{ "%.2f"|format(sale.total_amount) }}</td>
+                                <td>
+                                    <span class="badge {% if sale.is_paid %}bg-success{% else %}bg-warning{% endif %}">
+                                        {{ "Paid" if sale.is_paid else "Pending" }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
