@@ -1427,7 +1427,8 @@ def reorder_product(product_id):
         }), 500
 
 if __name__ == '__main__':
-    init_db()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    with app.app_context():
+        init_db()
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
 
 # test commit verifying git detection
